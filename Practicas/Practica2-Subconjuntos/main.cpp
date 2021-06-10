@@ -3,9 +3,10 @@
 #define F first
 #define S second
 #define PB push_back
+#include "Diagrama.cpp"
 using namespace std;
 string epsilon = "Є";
-const int N = 500;
+const int N = 5000;
 
 // Algoritmo de los subconjuntos : AFN -> AFD
 
@@ -27,12 +28,11 @@ class Subconjuntos{
     private :
         int nodo_inicial = -1;
         int nodo_aceptado = -1;
-        set <string> alfabeto;
         set <set <int> > kernels;
 
         int contador_conjunto = 0;
         string id_conjunto = "A";
-        string conjunto_vacio = "EMPTY";
+        string conjunto_vacio = "";
         bool hay_vacio = false;
 
         bool visitado[N];
@@ -74,6 +74,10 @@ class Subconjuntos{
                }
 
                if (kernel_actual.size() == 0){
+                   if (conjunto_vacio.size() == 0){
+                      conjunto_vacio = nuevoConjunto(id_conjunto, contador_conjunto++);
+                   }
+
                    movimientos[conjunto][i] = conjunto_vacio;               // No encontramos ningun kernel por lo enviamos al pozo
                    hay_vacio = true;
                }
@@ -117,35 +121,7 @@ class Subconjuntos{
         map <string, set<int> > kernel;                     // Tenemos un map de todos los kernels de los subconjuntos que encontramos
         map <string, map <string, string> > movimientos;    // Tenemos un map que nos ayuda hacer seguimiento de todos los movientos que realizamos
         vector <string> aceptados;
-
-        void imprimir(){
-        
-            for (auto it : movimientos){
-                for (auto i : alfabeto){
-                    if ((it.S).find(i) != (it.S).end())
-                        cout << it.F << " - " << movimientos[it.F][i] <<  "  |  " << i << endl;
-                }
-            }
-/*
-            cout << endl << endl;
-
-            for (auto it : subconjuntos){
-                auto s = it.S;
-                cout << it.F << "  |  ";
-                for (auto it2 : s) cout << it2 << " ";
-                cout << "  |  Kernel ->  ";
-
-                auto x = kernel[it.F];
-                for (auto it3 : x) cout << it3 << " ";
-                cout << endl;
-            }
-
-            cout << endl << endl;
-
-            for (auto i : aceptados) cout << i << endl;
-*/
-
-        }
+        set <string> alfabeto;
 
         void setDatos(int nodo_i, int nodo_a, set <string> alpha, auto adj){ // Hacemos un setter de los datos que vamos a ocupar
             nodo_inicial  = nodo_i;
@@ -195,7 +171,13 @@ int main(){
     Subconjuntos actual;
     actual.setDatos(nodo_inicial, nodo_aceptado, alpha, adj);
     actual.constuir();
-    actual.imprimir();
+
+    
+    Diagrama diagrama_actual;
+    diagrama_actual.setDatos("A", actual.aceptados, actual.movimientos, actual.alfabeto);
+    diagrama_actual.crearArchivo();
+    diagrama_actual.mostrarDiagrama();
+
 
     return 0;
 }
