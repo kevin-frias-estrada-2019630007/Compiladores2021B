@@ -10,7 +10,7 @@ int yyerror(char *s);
 
 %token VARIABLE NUMBER STRING_LITERAL 
 %token EQ_OP
-%token INT STRING CONST
+%token INT STRING CONST CHAR
 %token IF WHILE 
 %token NEG 
 %left '*' '/'
@@ -36,10 +36,9 @@ input: %empty
 expresion : declaration 
 ;
 
-declaration:
-tipo  asignacion ';' {printf("\n1.- Debemos obtener el tipo de dato con el que estamos trabajando \n");
-                      printf("2.- Reservamos un espacio de memoria para poder guardar nuestra variable \n");                 
-                     }
+declaration: tipo  asignacion  ';'               {printf("Declaración de un INT o STRING \n"); }
+| CONST INT  VARIABLE  '=' expresion_number  ';' {printf("Declaración de un INT   CONSTANTE \n"); }
+| CONST CHAR '*' VARIABLE '=' STRING_LITERAL ';' {printf("Declaración de un STRING CONSTANTE \n"); }
 ;
 
 tipo : INT
@@ -57,6 +56,7 @@ asignacion : VARIABLE
 
 data : expresion_number
 | STRING_LITERAL
+| CHAR '*'
 ;
 
 expresion_number: NUMBER {  /*| VARIABLE                              {$$ = sym[$1];} */ }
