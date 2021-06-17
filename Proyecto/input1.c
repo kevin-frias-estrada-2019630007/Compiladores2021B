@@ -1,12 +1,9 @@
-/*#include <stdio.h>
-int main(){
+int a = -2;
+int b;
+int c = 12 + (-3 * 5);
+int d = a;
+int e = ;
 
-    int a, b, c, d;
-    */
-    
-    a = b = c = d = 12;
-/*
-    printf("%d %d %d", a , b , c);
-    return 0;
-}
-*/
+
+string s1 = "hola como estas 122 * 3";
+string s1;

@@ -12,14 +12,15 @@ int yyerror(char *s);
 %token EQ_OP
 %token INT STRING CONST
 %token IF WHILE 
+%token NEG 
 %left '*' '/'
 %left '+' '-'
 
 
 %type <num> NUMBER
-%type <num> expresion_number
 %type <var> VARIABLE
 %type <var> STRING_LITERAL;
+%type <num> expresion_number
 
 %union{
     int num;
@@ -28,73 +29,50 @@ int yyerror(char *s);
 
 %%
 
-input:
-    %empty
-    | expresion input
-    ;
+input: %empty
+| expresion input
+;
 
-expresion :
-         declaration 
-        ;
+expresion : declaration 
+;
 
 declaration:
-    tipo asignacion_variable ';' {printf("1.- Debemos obtener el tipo de dato con el que estamos trabajando \n");
-                                  printf("2.- Checamos si es que tuvo una asignación o simplemente se declaró \n");
-                                  printf("3.- Reservamos un espacio de memoria para poder guardar nuestra variable \n");
-                                  }
-    | CONST tipo asignacion_constante ';'
-    | VARIABLE assing ';' {printf("There was an assing \n ");
-        
-    ;
+tipo  asignacion ';' {printf("\n1.- Debemos obtener el tipo de dato con el que estamos trabajando \n");
+                      printf("2.- Reservamos un espacio de memoria para poder guardar nuestra variable \n");                 
+                     }
+;
 
-tipo :
-      INT
-    | STRING
-    ;
+tipo : INT
+| STRING
+;
 
-asignacion_variable :
-      VARIABLE
-    | VARIABLE '=' expresion_number
-    | VARIABLE '=' STRING_LITERAL
+asignacion : VARIABLE
+| VARIABLE '=' data
+| VARIABLE '=' data ',' asignacion
+| VARIABLE '=' VARIABLE
+| VARIABLE '=' VARIABLE ',' asignacion
+;
 
-    | VARIABLE ',' asignacion_variable
 
-    | VARIABLE '=' expresion_number ',' asignacion_variable
-    | VARIABLE '=' STRING_LITERAL  ',' asignacion_variable
-    ;
 
-asignacion_constante :
-      VARIABLE '=' expresion_number
-    | VARIABLE '=' STRING_LITERAL
-    | VARIABLE '=' expresion_number ',' asignacion_constante
-    | VARIABLE '=' STRING_LITERAL  ',' asignacion_constante
-    ;
+data : expresion_number
+| STRING_LITERAL
+;
 
-assing:
-       '=' data
-     | '=' data '+' data
-     | '=' data assing
-    ;
+expresion_number: NUMBER {  /*| VARIABLE                              {$$ = sym[$1];} */ }
+| '-' expresion_number                  {$$ = -$2; }
+| expresion_number '+' expresion_number {$$ = $1 + $3; }
+| expresion_number '-' expresion_number {$$ = $1 - $3; }
+| expresion_number '*' expresion_number {$$ = $1 * $3; }
+| expresion_number '/' expresion_number {$$ = $1 / $3; }
+| '(' expresion_number ')'              {$$ = $2; }
+;
 
-data:
-    expresion_number
-    | STRING_LITERAL
-    | VARIABLE
-    ;
-
-expresion_number:
-          NUMBER
-        | expresion_number '*' expresion_number {$$ = $1 * $3;}
-        | expresion_number '/' expresion_number {$$ = $1 / $3;}
-        | expresion_number '+' expresion_number {$$ = $1 + $3;}
-        | expresion_number '-' expresion_number {$$ = $1 - $3;}
-        | '(' expresion_number ')'              {$$ = $2;}
-        ;
 
 %%
 
 int yyerror(char *s){
- // printf("Syntax Error on line who knows xp %s\n", s);
+ printf("Syntax Error\n");
 }
 
 int main(void){
