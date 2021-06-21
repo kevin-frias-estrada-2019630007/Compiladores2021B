@@ -33,9 +33,16 @@ L?\"(\\.|[^\\"])*\"		{strcpy(yylval.var, yytext); return(STRING_LITERAL);}
 "+"	    				{return('+');}
 "*"		    			{return('*');}
 "/" 					{return('/');}
+
 "=="					{return(EQ_OP);} 
+"!="					{return(DF_OP);} 
+">="					{return(GE_OP);} 
+"<="					{return(LE_OP);} 
 "<"				    	{return('<');}
 ">"			    		{return('>');}
+
+
+
 {S}		    			{}
 .	    				{}
 
@@ -47,4 +54,3 @@ int yywrap(){
 
 void comment() {
 }
-

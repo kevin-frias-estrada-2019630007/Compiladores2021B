@@ -9,7 +9,7 @@ int yyerror(char *s);
 %}
 
 %token VARIABLE NUMBER STRING_LITERAL 
-%token EQ_OP
+%token EQ_OP DF_OP LE_OP GE_OP
 %token INT STRING CONST CHAR
 %token IF WHILE 
 %token NEG 
@@ -33,7 +33,10 @@ input: %empty
 | expresion input
 ;
 
-expresion : declaration 
+expresion : declaration                 
+| VARIABLE '=' asignacion
+| WHILE '(' condicion ')' '{' expresion '}'     {printf("Hay un loop while \n");}
+| IF    '(' condicion ')' '{' expresion '}'     {printf("Hay un if \n");}
 ;
 
 declaration: tipo  asignacion  ';'               {printf("Declaración de un INT o STRING \n"); }
@@ -52,6 +55,17 @@ asignacion : VARIABLE
 | VARIABLE '=' VARIABLE ',' asignacion
 ;
 
+condicion: data operador_logico data {printf("Condicion * \n");};
+
+
+operador_logico:
+'>'
+|'<'
+| LE_OP
+| GE_OP
+| DF_OP
+| EQ_OP
+;
 
 
 data : expresion_number
@@ -73,6 +87,7 @@ expresion_number: NUMBER {  /*| VARIABLE                              {$$ = sym[
 
 int yyerror(char *s){
  printf("Syntax Error\n");
+ yyparse();
 }
 
 int main(void){
