@@ -16,7 +16,6 @@ int yyerror(char *s);
 %left '*' '/'
 %left '+' '-'
 
-
 %type <num> NUMBER
 %type <var> VARIABLE
 %type <var> STRING_LITERAL;
@@ -33,29 +32,42 @@ input: %empty
 | expresion input
 ;
 
-expresion : declaration                 
-| VARIABLE '=' asignacion
-| WHILE '(' condicion ')' '{' expresion '}'     {printf("Hay un loop while \n");}
-| IF    '(' condicion ')' '{' expresion '}'     {printf("Hay un if \n");}
+expresion : declaraciones
+| VARIABLE inicializar ';'
+| WHILE '(' condicion ')' '{' input '}'     {printf("Hay un loop while \n");}
+| IF    '(' condicion ')' '{' input '}'     {printf("Hay un if \n");}
 ;
 
-declaration: tipo  asignacion  ';'               {printf("Declaración de un INT o STRING \n"); }
-| CONST INT  VARIABLE  '=' expresion_number  ';' {printf("Declaración de un INT   CONSTANTE \n"); }
-| CONST CHAR '*' VARIABLE '=' STRING_LITERAL ';' {printf("Declaración de un STRING CONSTANTE \n"); }
+
+declaraciones: declaracion declaraciones
+| declaracion
 ;
+
+
+declaracion :
+tipo identificador ';'                            {printf("Hubo una declaracion \n");}
+| CONST INT  VARIABLE  '=' expresion_number  ';' {printf("Declaración de un INT   CONSTANTE \n"); }
+| CONST CHAR '*' VARIABLE '=' STRING_LITERAL ';'  {printf("Declaración de un STRING CONSTANTE \n"); }
+;            
+
+
+identificador:
+VARIABLE inicializar
+| identificador ',' VARIABLE inicializar
+;             
+
+inicializar:
+%empty
+| '=' data {printf("Hubo una asignacion \n");}
+;           
+
+
+condicion: data operador_logico data {printf("Condicion * \n");};
+
 
 tipo : INT
 | STRING
 ;
-
-asignacion : VARIABLE
-| VARIABLE '=' data
-| VARIABLE '=' data ',' asignacion
-| VARIABLE '=' VARIABLE
-| VARIABLE '=' VARIABLE ',' asignacion
-;
-
-condicion: data operador_logico data {printf("Condicion * \n");};
 
 
 operador_logico:
@@ -70,8 +82,9 @@ operador_logico:
 
 data : expresion_number
 | STRING_LITERAL
-| CHAR '*'
+| CHAR '*' { /*|VARIABLE */}
 ;
+
 
 expresion_number: NUMBER {  /*| VARIABLE                              {$$ = sym[$1];} */ }
 | '-' expresion_number                  {$$ = -$2; }
