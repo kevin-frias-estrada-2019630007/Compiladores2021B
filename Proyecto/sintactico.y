@@ -44,20 +44,17 @@ declaraciones: declaracion declaraciones
 ;
 
 
-declaracion :
-tipo identificador ';'                            {printf("Hubo una declaracion \n");}
+declaracion : tipo identificador ';'                            {printf("Hubo una declaracion \n");}
 | CONST INT  VARIABLE  '=' expresion_number  ';' {printf("Declaración de un INT   CONSTANTE \n"); }
 | CONST CHAR '*' VARIABLE '=' STRING_LITERAL ';'  {printf("Declaración de un STRING CONSTANTE \n"); }
 ;            
 
 
-identificador:
-VARIABLE inicializar
+identificador: VARIABLE inicializar
 | identificador ',' VARIABLE inicializar
 ;             
 
-inicializar:
-%empty
+inicializar: %empty
 | '=' data {printf("Hubo una asignacion \n");}
 ;           
 
@@ -70,8 +67,7 @@ tipo : INT
 ;
 
 
-operador_logico:
-'>'
+operador_logico: '>'
 |'<'
 | LE_OP
 | GE_OP
