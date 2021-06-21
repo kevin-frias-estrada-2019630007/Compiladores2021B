@@ -18,8 +18,9 @@ int yyerror(char *s);
 
 %type <num> NUMBER
 %type <var> VARIABLE
-%type <var> STRING_LITERAL;
+%type <var> STRING_LITERAL
 %type <num> expresion_number
+
 
 %union{
     int num;
@@ -32,34 +33,33 @@ input: %empty
 | expresion input
 ;
 
-expresion : declaraciones
-| VARIABLE inicializar ';'
-| WHILE '(' condicion ')' '{' input '}'     {printf("Hay un loop while \n");}
-| IF    '(' condicion ')' '{' input '}'     {printf("Hay un if \n");}
+expresion : declaracion                 {printf("Hubo una declaracion \n");}
+| asignar   ';'                         {printf("Hubo una asignacion \n");}
+| WHILE '(' condicion ')' '{' input '}' {printf("Hay un loop while \n");}
+| IF    '(' condicion ')' '{' input '}' {printf("Hay un if \n");}
 ;
 
 
-declaraciones: declaracion declaraciones
-| declaracion
-;
-
-
-declaracion : tipo identificador ';'                            {printf("Hubo una declaracion \n");}
+declaracion : tipo identificador ';'             {printf("Hubo una declaracion \n");}
 | CONST INT  VARIABLE  '=' expresion_number  ';' {printf("Declaración de un INT   CONSTANTE \n"); }
-| CONST CHAR '*' VARIABLE '=' STRING_LITERAL ';'  {printf("Declaración de un STRING CONSTANTE \n"); }
+| CONST CHAR '*' VARIABLE '=' STRING_LITERAL ';' {printf("Declaración de un STRING CONSTANTE \n"); }
 ;            
 
 
 identificador: VARIABLE inicializar
-| identificador ',' VARIABLE inicializar
+| VARIABLE inicializar ',' identificador
 ;             
 
-inicializar: %empty
+inicializar:
+%empty
 | '=' data {printf("Hubo una asignacion \n");}
 ;           
 
+asignar : VARIABLE '=' data
+;
 
-condicion: data operador_logico data {printf("Condicion * \n");};
+
+condicion: expresion_number operador_logico expresion_number {printf("Dentro de la condicion : %d  %d \n", $1, $3);};
 
 
 tipo : INT
@@ -67,9 +67,9 @@ tipo : INT
 ;
 
 
-operador_logico: '>'
-|'<'
-| LE_OP
+operador_logico: '>' 
+|'<'   
+| LE_OP  
 | GE_OP
 | DF_OP
 | EQ_OP
