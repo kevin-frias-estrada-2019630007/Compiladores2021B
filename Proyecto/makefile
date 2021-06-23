@@ -1,10 +1,10 @@
-default:
-	clear
-	flex -l lexico.l
-	bison -dy sintactico.y 
-	gcc y.tab.c lex.yy.c -lfl
-	more test.c
+	flex -l lexer.l
+	bison -d parser.y
+	gcc -o program parser.tab.c lex.yy.c -lfl
 	rm lex.yy.c
-	rm y.tab.c
-    
-	./a.out < test.c
+	more example.c > output.txt
+	./program < example.c >> output.txt
+	rm program 
+	rm parser.tab.h
+	rm parser.tab.c
+	more output.txt
