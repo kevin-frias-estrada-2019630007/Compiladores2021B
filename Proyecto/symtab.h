@@ -1,24 +1,25 @@
 // Tamaño maximo del arreglo para nuestra tabla hash, este tiene que ser un número primo
 #define SIZE 499
 
-// Tamaño maximo del nombre de nuestro token
-#define SZTOKEN 60
-
 // Definimos el tipo de token que estamos ocupando
 #define UNDEF 0
-#define INT_TYPE 1
-#define STR_TYPE 2
-#define LOGIC_TYPE 3
+#define _INT_ 1
+#define _STR_ 2
+#define _CHR_ 3
+#define _LOGIC_ 4
 
 // struct that represents a list node
 typedef struct nodo{
     // El nombre de nuestro token, aka, yytext
-	char nombre[SZTOKEN];
+	char nombre[100];
 	// type
     int tipo;
 
     // valor
     int valor;
+
+    // scope
+    int scope;
 
 }nodo;
 
@@ -35,7 +36,7 @@ void init_hash_table();
 unsigned int hash(char *key);
 
 // Insertamos el valor en la tabla hash
-void insert(char *name, int len, int type, int lineno); 
+void insert(char *name, int len, int type, int lineno, int scopeI); 
 
 // Funcion para buscar si es que nuestra llave ya existe dentro de la tabla
 nodo *buscar(char *name); 

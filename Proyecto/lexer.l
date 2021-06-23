@@ -27,10 +27,10 @@ CHARACTER	(\'[ -~](1)\')
 "const"	                { return CONST; }
 
 
-"if"		    		{ return IF;     }
-"else"	    		    { return ELSE;   }
-"while"		    	    { return WHILE;  }
-"for"			    	{ return FOR;    }
+"if"		    		{ return IF;   }
+"else"	    		    { return ELSE; }
+"while"		    	    { return WHILE;}
+"for"			    	{ return FOR;  }
 
 
 "||"					{ return OR_OP;   }
@@ -40,22 +40,26 @@ CHARACTER	(\'[ -~](1)\')
 ">"|"<"|">="|"<="		{ return RE_OP;  }
 
 
-";"					    { return(';'); }
-"{"       				{ return('{'); }
-"}"     				{ return('}'); }
-","				    	{ return(','); }
-"="			    		{ return('='); }
-"("			    		{ return('('); }
-")"		     			{ return(')'); }
+";"					    { return(SEMI); }
+"{"       				{ return(OPEN_BR); }
+"}"     				{ return(CLOSE_BR); }
+","				    	{ return(COMA); }
+"="			    		{ return(ASSING); }
+"("			    		{ return(OPEN_PR); }
+")"		     			{ return(CLOSE_PR); }
 
-"-"		    			{ return('-'); }
-"+"	    				{ return('+'); }
-"*"		    			{ return('*'); }
-"/" 					{ return('/'); }
+"++"                    { return(UN_ADD);}
+"--"                    { return(UN_SUB);}
 
 
+"-"		    			{ return(SUB); }
+"+"	    				{ return(ADD); }
+"*"		    			{ return(MUL); }
+"/" 					{ return(DIV); }
 
-{VARIABLE} 	    	    {  insert(yytext, strlen(yytext), UNDEF, lineno);
+
+
+{VARIABLE} 	    	    {  insert(yytext, strlen(yytext), UNDEF, lineno, -1);
                            yylval.st_val = buscar(yytext);
                            return VARIABLE;
 				        }

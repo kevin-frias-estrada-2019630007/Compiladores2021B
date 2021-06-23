@@ -1,0 +1,23 @@
+int a = 12;
+
+for (int i = 0; i < 12; ++i){
+    int x = i + 2;
+}
+Hubo una asignacion 
+Scope actual : 0 
+Hubo una declaracion 
+
+
+Scope actual : 1 
+Hubo una asignacion 
+Hubo una condicion 
+
+Hubo una asignacion 
+Scope actual : 1 
+Hubo una declaracion 
+
+Hay un loop for 
+
+Variable : a  |  Scope : -1 
+Variable : i  |  Scope : -1 
+Variable : x  |  Scope : -1 

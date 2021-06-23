@@ -1,11 +1,5 @@
-int a;
-a = 133;
+int a = 12;
 
-if ( 12 < 3){
-    b = 12;
-}
-
-while( 12 < 3){
-    int x;
-    x = 12;
+for (int i = 0; i < 12; ++i){
+    int x = i + 2;
 }

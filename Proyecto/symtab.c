@@ -21,7 +21,7 @@ unsigned int hash(char *key){
 }
 
 // Insertamos dentro de nuestra tabla de simbolos, pidiendo el nombre del token, su tamaño, el tipo del token y la linea en la que se encontro
-void insert(char *name, int len, int type, int lineno){
+void insert(char *name, int len, int type, int lineno, int scopeI){
     // Obtenemos el valor del arreglo en donde ira nuestro dato
 	unsigned int index = hash(name);
 
@@ -34,13 +34,16 @@ void insert(char *name, int len, int type, int lineno){
 		l = (nodo*) malloc(sizeof(nodo));
 
         // Le asignamos el nombre del nuestro token, el nombre que le damos a la variable, aka yytext
-		strncpy(l->nombre, name, len);  
+        strncpy(l->nombre, name, len);
 
         // Decimos de que tipo fue el token que recivimos
 		l->tipo = type;
 
         // Le asigamos un valor dummie, nos sirve para despues asignarle un valor a la variable
         l->valor = 0;
+
+        // Le asignamos el valor del scope de donde nos encontramos
+        l->scope = scopeI;
 
         // Lo asignamos a la tabla hash
 		hash_table[index] = l; 
@@ -65,7 +68,7 @@ void imprimir(){
     for(int i = 0; i < SIZE; i++){
         if (hash_table[i] != NULL) {
 	        nodo *l = hash_table[i];
-            printf("%s \n", l -> nombre);
+            printf("Variable : %s  |  Scope : %d \n", l -> nombre, l -> scope);
         }
     }
 
