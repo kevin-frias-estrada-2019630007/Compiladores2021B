@@ -127,7 +127,6 @@ expresion_number: IVALUE
                                           else $$ = 0;
                                             
                                           if (l->scope == -1) l -> scope = scope;
-
                                         }
 
 | SUB expresion_number                  {$$ = -$2; }
@@ -179,10 +178,9 @@ int main(void){
     // Hacemos el parseo
    yyparse();
 
-    imprimir();
-
-  //  imprimir_stack();
-  //  printf("Top -> %s \n", top());
+  //  imprimir();
+    printf("Top -> %s \n", top());
+    imprimir_stack();
 
 
     return 0;

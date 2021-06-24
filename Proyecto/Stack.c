@@ -9,6 +9,7 @@
 #define _LOGIC_ 4
 
 STN *head = NULL;
+STN *ref = NULL;
 
 int size_stack = 0;
 
@@ -16,43 +17,48 @@ STN *crearNodo(char *entrada){
     STN *nuevo = (STN *) malloc(sizeof(STN));
     nuevo -> data = entrada;
     nuevo -> next = NULL;
+    nuevo -> prev = NULL;
 
     return nuevo;
 }
 
 char *top(){
-    return head -> data;
+    return ref -> data;
 }
 
 
 void push(char *entrada){
     STN *actual = crearNodo(entrada);
 
-    if (head == NULL) head = actual;
+    if (head == NULL){ head = actual; ref = actual;}
     else{
-        STN *temp = head;
-        while(temp -> next != NULL) temp = temp -> next;
-        temp -> next = actual;
-    }
+         STN *temp = head;
+         while(temp -> next != NULL) temp = temp -> next;
+         temp -> next = actual;
+         actual -> prev = temp;
+         ref = actual;
+      }
 
     size_stack ++;
 }
 
-char *pop(){
-    STN *temp = head;
-    head = head -> next;
+void pop(){
+
+    if (size_stack != 0) {
+        ref = ref -> prev;
+        ref -> next = NULL;
+    }
 
     size_stack --;
-
-    return temp -> data;
 }
 
 
 void imprimir_stack(){
-    STN *temp = head;
+    STN *temp = ref;
 
     while(temp != NULL) {      
         printf("-- %s \n", temp -> data);
-        temp = temp -> next;
+        temp = temp -> prev;
     }
+
 }

@@ -9,11 +9,12 @@
 typedef struct StackNode{
     char *data;
     struct StackNode * next;
+    struct StackNode * prev;
 
 }STN;
 
 STN *crearNodo(char *entrada);
 char *top();
 void push(char *entrada);
-char *pop();
+void pop();
 void imprimir_stack();

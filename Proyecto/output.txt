@@ -1,18 +1,9 @@
 int s;
 
-for(int i = 0; i < 12; ++i){
-    int x;
-}
-
 Hubo una declaracion 
 
 
-
-Hubo una declaracion 
-
-Hay un loop for con decl 
-
-
-Variable : i  |  Scope : 1 
-Variable : s  |  Scope : 0 
-Variable : x  |  Scope : 1 
+Top -> ; 
+-- ; 
+-- s 
+-- INT 
