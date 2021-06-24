@@ -14,7 +14,7 @@ void init_hash_table(){
 unsigned int hash(char *key){
 	unsigned int index = 0;
 
-	for(;*key!='\0';key++) index += *key;
+	for(; *key; key++) index += *key;
 	index += key[0] % 11 + (key[0] << 3) - key[0];
 
 	return index % SIZE;
@@ -33,14 +33,17 @@ void insert(char *name, int len, int type, int lineno, int scopeI){
         // Creamos un nuevo nodo de nuestra lista 
 		l = (nodo*) malloc(sizeof(nodo));
 
-        // Le asignamos el nombre del nuestro token, el nombre que le damos a la variable, aka yytext
+        // Le asignamos el nombre del nuestro token, el nombre que le damos a la variable, aka, yytext
         strncpy(l->nombre, name, len);
 
         // Decimos de que tipo fue el token que recivimos
 		l->tipo = type;
 
-        // Le asigamos un valor dummie, nos sirve para despues asignarle un valor a la variable
-        l->valor = 0;
+
+        // Le asigamos un valor dummie, nos sirve para despues asignarle un valor a la variable de manera correcta
+        l-> Ivalue = 0;
+        l-> Cvalue = "";
+
 
         // Le asignamos el valor del scope de donde nos encontramos
         l->scope = scopeI;
@@ -64,7 +67,6 @@ nodo *buscar(char *name){
 }
 
 void imprimir(){
-    
     for(int i = 0; i < SIZE; i++){
         if (hash_table[i] != NULL) {
 	        nodo *l = hash_table[i];

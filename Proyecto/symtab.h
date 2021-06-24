@@ -15,8 +15,9 @@ typedef struct nodo{
 	// type
     int tipo;
 
-    // valor
-    int valor;
+    // valor del token
+    int   Ivalue;
+    char *Cvalue;
 
     // scope
     int scope;

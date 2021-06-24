@@ -1,5 +1,6 @@
 %{
     #include "symtab.c"
+    #include "Stack.c"
     #include <stdio.h>
     #include <math.h>
     #include <string.h>
@@ -8,6 +9,7 @@
     int yylex(void);
     void yyerror();
     void impS();
+    char *to_string(int number);
 
     int scope = 0;
 
@@ -50,6 +52,7 @@
 %right CLOSE_PR CLOSE_BR
 
 %type <int_val> expresion_number
+%type <str_val> tipo
 
 %start input
 
@@ -60,7 +63,7 @@ input: %empty
 ;
 
 expresion : declaracion                                                                                               {printf("Hubo una declaracion \n");}
-| asignar SEMI                                                                                                        {printf("Hubo una asignacion \n");}
+| asignar SEMI                                                                                                        {printf("Hubo una asignacion expresion \n");}
 
 | IF OPEN_PR condicion CLOSE_PR OPEN_BR {scope++;}input CLOSE_BR  opcional_if                                         {printf("Hay un if \n");scope--;}
 
@@ -80,16 +83,15 @@ declaracion :  tipo identificador SEMI              {impS();}
 ;
 
 
-identificador: VARIABLE inicializar
+identificador: VARIABLE inicializar {push($1 -> nombre);}
 | VARIABLE inicializar COMA identificador
 ;
 
 inicializar: %empty
-| ASSING data {printf("Hubo una asignacion \n");}
+| ASSING data
 ;
 
-asignar : VARIABLE ASSING data {impS(); printf("Hubo una asignacion \n");}
-;
+asignar : VARIABLE ASSING data {impS();}
 
 condicion: expresion_number operador_logico expresion_number            {printf("Hubo una condicion \n");}
 |  NOT_OP expresion_number  operador_logico expresion_number            {printf("Hubo una condicion \n");}
@@ -98,20 +100,20 @@ condicion: expresion_number operador_logico expresion_number            {printf(
 ;
 
 
-tipo : INT
-| STRING
-| CHAR
+tipo : INT {push("INT");}
+| STRING   {push ("STRING");}
+| CHAR     {push("CHAR");}
 ;
 
 
 operador_logico: OR_OP
-| AND_OP
-| EQ_OP
+| AND_OP              
+| EQ_OP              
 | RE_OP
 ;
 
 
-data : expresion_number
+data : expresion_number {push(to_string($1));}
 | SVALUE
 | CVALUE MUL
 ;
@@ -121,7 +123,7 @@ expresion_number: IVALUE
 | VARIABLE                              { 
                                           unsigned int index = hash($1->nombre);
                                           nodo *l = hash_table[index];
-                                          if (l -> tipo == 0) $$ = $1 -> valor;
+                                          if (l -> tipo == 0) $$ = $1 -> Ivalue;
                                           else $$ = 0;
                                         }
 
@@ -148,6 +150,25 @@ void impS(){
     printf("Scope actual : %d \n", scope);
 }
 
+int contarI(int n){
+    int cont = 0;
+
+    while(n){
+        cont ++;
+        n /= 10;
+    }
+
+    return cont;
+}
+
+char *to_string(int number){
+
+ char* s = (char*)malloc(sizeof(char)* (contarI(number) + 3));
+ sprintf(s, "%d", number);
+
+ return s;
+}
+
 int main(int argc, char *argv[]){
     // Inicializamos nuestra hash table
     init_hash_table();
@@ -155,7 +176,9 @@ int main(int argc, char *argv[]){
     // Hacemos el parseo
     yyparse();
 
-    imprimir();
+//    imprimir();
+
+    imprimir_stack();
 
     return 0;
 }
