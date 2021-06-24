@@ -35,7 +35,6 @@ CHARACTER	(\'[ -~](1)\')
 
 "||"					{ return OR_OP;   }
 "&&"					{ return AND_OP;  }
-"!"						{ return NOT_OP;  }
 "=="|"!="				{ return EQ_OP;  }
 ">"|"<"|">="|"<="		{ return RE_OP;  }
 

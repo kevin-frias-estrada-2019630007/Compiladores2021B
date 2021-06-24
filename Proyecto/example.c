@@ -1,4 +1,6 @@
-int s = 12;
+int s;
 
-string p = "";
+for(int i = 0; i < 12; ++i){
+    int x;
+}
 

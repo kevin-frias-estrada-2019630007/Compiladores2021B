@@ -13,6 +13,8 @@
 
     int scope = 0;
 
+    // Cuando hacemos un scope--, tenemos que quitar todas esas variables referentes a ese scope
+
 %}
 
 %union{
@@ -45,7 +47,6 @@
 %left  RE_OP
 %left  EQ_OP
 
-%right NOT_OP
 %right UN_ADD
 %right UN_SUB
 
@@ -65,11 +66,11 @@ input: %empty
 expresion : declaracion                                                                                               {printf("Hubo una declaracion \n");}
 | asignar SEMI                                                                                                        {printf("Hubo una asignacion expresion \n");}
 
-| IF OPEN_PR condicion CLOSE_PR OPEN_BR {scope++;}input CLOSE_BR  opcional_if                                         {printf("Hay un if \n");scope--;}
+| IF OPEN_PR condicion CLOSE_PR OPEN_BR {scope++;} input CLOSE_BR  opcional_if                                         {printf("Hay un if \n");scope--;}
 
 | WHILE OPEN_PR condicion CLOSE_PR OPEN_BR {scope++;} input CLOSE_BR                                                  {printf("Hay un loop while \n"); scope--;}
-| FOR OPEN_PR {scope++;} tipo asignar SEMI condicion SEMI expresion_number CLOSE_PR OPEN_BR input CLOSE_BR            {printf("Hay un loop for \n");   scope--;}
-| FOR OPEN_PR {scope++;} asignar SEMI condicion SEMI expresion_number CLOSE_PR OPEN_BR input CLOSE_BR                 {printf("Hay un loop for \n");   scope--;}
+| FOR OPEN_PR {scope++;} tipo asignar SEMI condicion SEMI expresion_number CLOSE_PR OPEN_BR input CLOSE_BR            {printf("Hay un loop for con decl \n"); scope--;}
+| FOR OPEN_PR {scope++;} asignar SEMI condicion SEMI expresion_number CLOSE_PR OPEN_BR input CLOSE_BR                 {printf("Hay un loop for sin decl\n");   scope--;}
 ;
 
 opcional_if: %empty
@@ -77,27 +78,23 @@ opcional_if: %empty
 ;
 
 
-declaracion :  tipo identificador SEMI              {impS();}
-| CONST INT  VARIABLE  ASSING expresion_number SEMI {impS(); printf("Declaración de un INT   CONSTANTE \n"); }
-| CONST CHAR MUL VARIABLE ASSING SVALUE        SEMI {impS(); printf("Declaracion de un STRING CONSTANTE");}
+declaracion :  tipo identificador SEMI              {push(";");}
+| CONST INT  VARIABLE  ASSING expresion_number SEMI {printf("Declaración de un INT   CONSTANTE \n"); }
+| CONST CHAR MUL VARIABLE ASSING SVALUE        SEMI {printf("Declaracion de un STRING CONSTANTE");}
 ;
 
 
-identificador: VARIABLE inicializar {push($1 -> nombre);}
-| VARIABLE inicializar COMA identificador
+identificador: VARIABLE inicializar { /*Aquí hay agregar la lógica para saber si ya está definida*/ push($1 -> nombre); $1 -> scope = scope;}
+| VARIABLE inicializar COMA identificador {$1->scope = scope;}
 ;
 
 inicializar: %empty
-| ASSING data
+| ASSING data { push("="); }
 ;
 
-asignar : VARIABLE ASSING data {impS();}
+asignar : VARIABLE ASSING data {push("="); $1 -> scope = scope;}
 
-condicion: expresion_number operador_logico expresion_number            {printf("Hubo una condicion \n");}
-|  NOT_OP expresion_number  operador_logico expresion_number            {printf("Hubo una condicion \n");}
-|  NOT_OP expresion_number  operador_logico  NOT_OP expresion_number    {printf("Hubo una condicion \n");}
-|  expresion_number  operador_logico  NOT_OP expresion_number           {printf("Hubo una condicion \n");}
-;
+condicion: data operador_logico data ;
 
 
 tipo : INT {push("INT");}
@@ -114,8 +111,11 @@ operador_logico: OR_OP
 
 
 data : expresion_number {push(to_string($1));}
-| SVALUE
-| CVALUE MUL
+| SVALUE                {push($1);}
+| CVALUE MUL            {  char *temp = $1 + "";
+                           push(temp); 
+                           push("*");
+                        }
 ;
 
 
@@ -125,6 +125,9 @@ expresion_number: IVALUE
                                           nodo *l = hash_table[index];
                                           if (l -> tipo == 0) $$ = $1 -> Ivalue;
                                           else $$ = 0;
+                                            
+                                          if (l->scope == -1) l -> scope = scope;
+
                                         }
 
 | SUB expresion_number                  {$$ = -$2; }
@@ -169,16 +172,18 @@ char *to_string(int number){
  return s;
 }
 
-int main(int argc, char *argv[]){
+int main(void){
     // Inicializamos nuestra hash table
     init_hash_table();
 
     // Hacemos el parseo
-    yyparse();
+   yyparse();
 
-//    imprimir();
+    imprimir();
 
-    imprimir_stack();
+  //  imprimir_stack();
+  //  printf("Top -> %s \n", top());
+
 
     return 0;
 }

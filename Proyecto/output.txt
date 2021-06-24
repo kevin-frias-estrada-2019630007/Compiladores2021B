@@ -1,17 +1,18 @@
-int s = 12;
+int s;
 
-string p = "";
+for(int i = 0; i < 12; ++i){
+    int x;
+}
 
-Scope actual : 0 
 Hubo una declaracion 
 
 
-Scope actual : 0 
+
 Hubo una declaracion 
 
+Hay un loop for con decl 
 
--- INT 
--- 12 
--- s 
--- STRING 
--- p 
+
+Variable : i  |  Scope : 1 
+Variable : s  |  Scope : 0 
+Variable : x  |  Scope : 1 

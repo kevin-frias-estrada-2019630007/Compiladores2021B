@@ -36,6 +36,7 @@ void insert(char *name, int len, int type, int lineno, int scopeI){
         // Le asignamos el nombre del nuestro token, el nombre que le damos a la variable, aka, yytext
         strncpy(l->nombre, name, len);
 
+
         // Decimos de que tipo fue el token que recivimos
 		l->tipo = type;
 

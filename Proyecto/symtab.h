@@ -42,5 +42,5 @@ void insert(char *name, int len, int type, int lineno, int scopeI);
 // Funcion para buscar si es que nuestra llave ya existe dentro de la tabla
 nodo *buscar(char *name); 
 
-
+// Con esta funcion imprimimos toda la informacion dentro de la tabla de simbolos
 void imprimir();
